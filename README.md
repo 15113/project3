@@ -11,7 +11,9 @@ This Google Apps Script project automates the process of collecting Zoom meeting
 
 ## Project Structure
 
-- `Code.js`: Contains the main logic for collection, AI automation launching, and the webhook receiver.
+- `Code.js`: Contains the webhook receiver and menu creation logic.
+- `ZoomMeetingSummarizer.js`: Contains the `ZoomMeetingSummarizer` class.
+- `Constants.js`: Contains configuration constants like sheet and label names.
 - `Secrets.js`: (Ignored by Git) Contains sensitive configuration like `SECRET_KEY`.
 - `appsscript.json`: Manifest file for the Google Apps Script project.
 - `.clasp.json.template`: A template for the `clasp` configuration file. Copy this to `.clasp.json` and insert your `scriptId`.
@@ -22,10 +24,10 @@ This Google Apps Script project automates the process of collecting Zoom meeting
 The following constants can be configured:
 
 - `SECRET_KEY`: Security key for the webhook (stored in `Secrets.js`).
-- `RAW_SHEET`: Name of the sheet for raw data (default: `Raw`).
-- `PROCESSED_SHEET`: Name of the sheet for processed data (default: `Processed`).
-- `RAW_LABEL`: Gmail label to watch (default: `zoom notes`).
-- `PROCESSED_LABEL`: Gmail label to apply after collection (default: `zoom notes processed`).
+- `RAW_SHEET`: Name of the sheet for raw data (stored in `Constants.js`).
+- `PROCESSED_SHEET`: Name of the sheet for processed data (stored in `Constants.js`).
+- `RAW_LABEL`: Gmail label to watch (stored in `Constants.js`).
+- `PROCESSED_LABEL`: Gmail label to apply after collection (stored in `Constants.js`).
 
 ## Setup
 
