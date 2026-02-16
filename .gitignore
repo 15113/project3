@@ -21,3 +21,6 @@ Thumbs.db
 .google
 .goog
 .antigravity
+
+# Secrets
+Secrets.js

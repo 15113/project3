@@ -12,14 +12,16 @@ This Google Apps Script project automates the process of collecting Zoom meeting
 ## Project Structure
 
 - `Code.js`: Contains the main logic for collection, AI automation launching, and the webhook receiver.
+- `Secrets.js`: (Ignored by Git) Contains sensitive configuration like `SECRET_KEY`.
 - `appsscript.json`: Manifest file for the Google Apps Script project.
 - `.clasp.json.template`: A template for the `clasp` configuration file. Copy this to `.clasp.json` and insert your `scriptId`.
+- `Secrets.js.template`: A template for the secrets file. Copy this to `Secrets.js` and insert your `SECRET_KEY`.
 
 ## Configuration
 
-The following constants in `Code.js` can be configured:
+The following constants can be configured:
 
-- `SECRET_KEY`: Security key for the webhook (default: `CMU_BOT_2026`).
+- `SECRET_KEY`: Security key for the webhook (stored in `Secrets.js`).
 - `RAW_SHEET`: Name of the sheet for raw data (default: `Raw`).
 - `PROCESSED_SHEET`: Name of the sheet for processed data (default: `Processed`).
 - `RAW_LABEL`: Gmail label to watch (default: `zoom notes`).
@@ -36,6 +38,8 @@ The following constants in `Code.js` can be configured:
    - Create labels `zoom notes` and `zoom notes processed` in your Gmail account.
 
 3. **Apps Script Deployment**:
+   - Copy `Secrets.js.template` to `Secrets.js` and update `SECRET_KEY` with your desired value.
+   - Copy `.clasp.json.template` to `.clasp.json` and update `scriptId`.
    - Copy the code to a new Apps Script project bound to your spreadsheet.
    - Deploy as a **Web App**:
      - Execute as: `User accessing the web app` (or `Me` depending on preference).

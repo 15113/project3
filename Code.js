@@ -1,6 +1,6 @@
 /** * CONFIGURATION 
  */
-const SECRET_KEY = "CMU_BOT_2026"; // Must match Tampermonkey
+// SECRET_KEY is now imported from Secrets.js
 const RAW_SHEET = "Raw";
 const PROCESSED_SHEET = "Processed";
 const RAW_LABEL = "zoom notes"; // Ensure this exists in Gmail
