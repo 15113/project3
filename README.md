@@ -29,18 +29,38 @@ The following constants can be configured:
 
 ## Setup
 
-1. **Google Sheets**:
+### 1. Local Environment (Clasp)
+
+This project uses [clasp](https://github.com/google/clasp) for local development and deployment.
+
+1. **Install clasp**:
+   ```bash
+   npm install -g @google/clasp
+   ```
+2. **Enable Apps Script API**:
+   You must enable the Apps Script API in your Google account. Visit [https://script.google.com/home/usersettings](https://script.google.com/home/usersettings) and toggle the **Google Apps Script API** to "On".
+3. **Login**:
+   ```bash
+   clasp login
+   ```
+4. **Initialize Configuration**:
+   - Copy `.clasp.json.template` to `.clasp.json`.
+   - Update the `scriptId` in `.clasp.json` with the ID of your Apps Script project (found in Project Settings).
+
+### 2. Google Sheets
    - Create a Google Sheet with two tabs named `Raw` and `Processed`.
    - The `Raw` sheet should have headers (e.g., Date, Subject, Body, Status).
    - The `Processed` sheet should have headers for: Date, Meeting Name, Accomplishments, Upcoming, Risks, Decisions, Status.
 
-2. **Gmail Labels**:
+### 3. Gmail Labels
    - Create labels `zoom notes` and `zoom notes processed` in your Gmail account.
 
-3. **Apps Script Deployment**:
+### 4. Project Configuration & Deployment
    - Copy `Secrets.js.template` to `Secrets.js` and update `SECRET_KEY` with your desired value.
-   - Copy `.clasp.json.template` to `.clasp.json` and update `scriptId`.
-   - Copy the code to a new Apps Script project bound to your spreadsheet.
+   - Push the code to Google:
+     ```bash
+     clasp push
+     ```
    - Deploy as a **Web App**:
      - Execute as: `User accessing the web app` (or `Me` depending on preference).
      - Who has access: `Anyone` (if using with external tools like Tampermonkey) or `Myself`.
