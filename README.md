@@ -13,6 +13,7 @@ This Google Apps Script project automates the process of collecting Zoom meeting
 
 - `Code.js`: Contains the main logic for collection, AI automation launching, and the webhook receiver.
 - `appsscript.json`: Manifest file for the Google Apps Script project.
+- `.clasp.json.template`: A template for the `clasp` configuration file. Copy this to `.clasp.json` and insert your `scriptId`.
 
 ## Configuration
 
