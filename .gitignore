@@ -1,0 +1,23 @@
+# Apps Script / clasp
+.clasp.json
+clasp-auth.json
+
+# IDEs
+.idea/
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Google Antigravity
+.google
+.goog
+.antigravity
