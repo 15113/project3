@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name         Gemini-to-Sheet Bridge (Safari Optimized)
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  Automates Gemini prompt injection and sends results back to Google Sheets
 // @author       You
 // @match        https://gemini.google.com/app*
+// @updateURL    https://raw.githubusercontent.com/15113/project3/main/tampermonkey/gemini-to-sheet.user.js
+// @downloadURL  https://raw.githubusercontent.com/15113/project3/main/tampermonkey/gemini-to-sheet.user.js
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
 // @grant        GM_getValue
