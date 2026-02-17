@@ -8,12 +8,13 @@ function createMeetingSummaryTable() {
 }
 
 /**
- * UTILITY: Truncate Raw and Processed sheets
+ * UTILITY: Reset sheets and Gmail labels
  */
-function truncateSheets() {
-  const manager = new GoogleSheetsManager();
+function reset() {
+  const manager = new GoogleAppsManager();
   manager.truncateRawSheet();
   manager.truncateProcessedSheet();
+  manager.resetZoomEmails();
 }
 
 /**
@@ -53,6 +54,6 @@ function onOpen() {
   ui.createMenu('🚀 AI Automation')
       .addItem('Generate Weekly Report', 'createMeetingSummaryTable')
       .addSeparator()
-      .addItem('Clear Spreadsheet', 'truncateSheets')
+      .addItem('Reset', 'reset')
       .addToUi();
 }

@@ -1,7 +1,7 @@
 /**
  * Manage sheet operations like clearing data
  */
-class GoogleSheetsManager {
+class GoogleAppsManager {
   /**
    * Clears all rows from the RAW sheet except the title row (row 1)
    */
@@ -14,6 +14,22 @@ class GoogleSheetsManager {
    */
   truncateProcessedSheet() {
     this._truncateSheet(PROCESSED_SHEET);
+  }
+
+  /**
+   * Resets the labels of emails from "zoom notes processed" back to "zoom notes"
+   */
+  resetZoomEmails() {
+    const processedLabel = GmailApp.getUserLabelByName(PROCESSED_LABEL);
+    const sourceLabel = GmailApp.getUserLabelByName(RAW_LABEL);
+    
+    if (!processedLabel || !sourceLabel) return;
+
+    const threads = processedLabel.getThreads();
+    threads.forEach(thread => {
+      thread.addLabel(sourceLabel);
+      thread.removeLabel(processedLabel);
+    });
   }
 
   /**
