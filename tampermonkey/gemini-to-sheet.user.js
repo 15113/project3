@@ -6,6 +6,9 @@
 // @author       You
 // @match        https://gemini.google.com/app*
 // @grant        GM_xmlhttpRequest
+// @grant        GM_setValue
+// @grant        GM_getValue
+// @grant        GM_registerMenuCommand
 // @connect      script.google.com
 // @connect      script.googleusercontent.com
 // ==/UserScript==
@@ -13,12 +16,38 @@
 (function() {
     'use strict';
 
-    // ================= CONFIGURATION =================
-    const WEBAPP_URL = "PASTE_YOUR_DEPLOYED_WEB_APP_URL_HERE";
-    const SECRET_KEY = "CMU_BOT_2026";
-    // =================================================
+    // Configuration priority:
+    // 1. Tampermonkey Storage (GM_getValue)
+    let WEBAPP_URL = GM_getValue("WEBAPP_URL", "");
+    let SECRET_KEY = GM_getValue("SECRET_KEY", "");
+
+    // Register menu commands to set config manually if needed
+    GM_registerMenuCommand("Set Web App URL", () => {
+        const url = prompt("Enter your Google Apps Script Web App URL:", WEBAPP_URL);
+        if (url !== null) {
+            GM_setValue("WEBAPP_URL", url);
+            location.reload();
+        }
+    });
+
+    GM_registerMenuCommand("Set Secret Key", () => {
+        const key = prompt("Enter your Secret Key:", SECRET_KEY);
+        if (key !== null) {
+            GM_setValue("SECRET_KEY", key);
+            location.reload();
+        }
+    });
+
+    function checkConfig() {
+        if (!WEBAPP_URL || !SECRET_KEY) {
+            console.warn("Gemini-to-Sheet: Configuration missing. Use the Tampermonkey menu to set WEBAPP_URL and SECRET_KEY.");
+            return false;
+        }
+        return true;
+    }
 
     function runAutomation() {
+        if (!checkConfig()) return;
         const hash = window.location.hash;
 
         // Only run if the URL has a prompt (the hash)

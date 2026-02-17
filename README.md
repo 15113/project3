@@ -65,15 +65,24 @@ This project uses [clasp](https://github.com/google/clasp) for local development
    - Create labels `zoom notes` and `zoom notes processed` in your Gmail account.
 
 ### 4. Project Configuration & Deployment
-   - In the `appscript/` directory, copy `Secrets.js.template` to `Secrets.js` and update `SECRET_KEY` with your desired value.
-   - Push the code to Google:
-     ```bash
-     clasp push
-     ```
-   - Deploy as a **Web App**:
-     - Execute as: `User accessing the web app` (or `Me` depending on preference).
-     - Who has access: `Anyone` (if using with external tools like Tampermonkey) or `Myself`.
-   - Note: The current `appsscript.json` is configured to execute as `USER_DEPLOYING` and access `MYSELF`.
+
+#### Google Apps Script
+1. In the `appscript/` directory, copy `Secrets.js.template` to `Secrets.js` and update `SECRET_KEY` with your desired value.
+2. Push the code to Google:
+   ```bash
+   clasp push
+   ```
+3. Deploy as a **Web App**:
+   - Execute as: `User accessing the web app` (or `Me` depending on preference).
+   - Who has access: `Anyone` (if using with external tools like Tampermonkey) or `Myself`.
+4. Note the **Web App URL** provided after deployment.
+
+#### Tampermonkey Script
+1. Install the Tampermonkey extension in your browser.
+2. Create a new script in Tampermonkey and paste the contents of `gemini-to-sheet.user.js`.
+3. Once the script is active on `gemini.google.com`, click the Tampermonkey icon in your browser.
+4. You will see menu commands: **"Set Web App URL"** and **"Set Secret Key"**.
+5. Use these to enter your configuration values. This data is saved in Tampermonkey's storage and survives script updates.
 
 ## Usage
 
@@ -87,6 +96,17 @@ This project uses [clasp](https://github.com/google/clasp) for local development
    - Once Gemini generates the table, your external tool (Tampermonkey) should send the data back to the script's Web App URL.
 
 ### Troubleshooting
-- **No data sent**: Ensure you have updated `WEBAPP_URL` in `tampermonkey/gemini-to-sheet.user.js` with your deployed Apps Script URL.
-- **Unauthorized**: Ensure `SECRET_KEY` in `tampermonkey/gemini-to-sheet.user.js` matches `SECRET_KEY` in `appscript/Secrets.js`.
+- **No data sent**: 
+  - Ensure you have set the `WEBAPP_URL` and `SECRET_KEY` via the Tampermonkey menu commands.
+  - Check the browser console (F12) for any "Configuration missing" warnings.
+- **Unauthorized**: Ensure `SECRET_KEY` matches exactly between `appscript/Secrets.js` and your Tampermonkey configuration.
 - **Pop-ups blocked**: Allow pop-ups for your Google Sheet to let it open Gemini.
+
+## Technical Details: Tampermonkey GM Functions
+
+The UserScript uses several `GM_` (Greasemonkey/Tampermonkey) functions to handle configuration and bypass browser restrictions:
+
+- **`GM_setValue(key, value)`**: Persistently stores a value in the Tampermonkey internal database. This allows your Web App URL and Secret Key to survive script updates and page reloads.
+- **`GM_getValue(key, defaultValue)`**: Retrieves a stored value from Tampermonkey's database.
+- **`GM_registerMenuCommand(name, callback)`**: Adds a custom entry to the Tampermonkey extension menu (the popup when you click the extension icon). We use this to provide a user interface for setting your configuration.
+- **`GM_xmlhttpRequest(details)`**: A powerful version of the standard `fetch` or `XMLHttpRequest` that can bypass Same-Origin Policy (CORS) restrictions. This is essential for sending data from the Gemini domain (`gemini.google.com`) to the Google Apps Script domain (`script.google.com`), which would otherwise be blocked by the browser for security.
