@@ -11,17 +11,23 @@ This Google Apps Script project automates the process of collecting Zoom meeting
 
 ## Project Structure
 
-- `Code.js`: Contains the webhook receiver and menu creation logic.
-- `ZoomMeetingSummarizer.js`: Contains the `ZoomMeetingSummarizer` class.
-- `Constants.js`: Contains configuration constants like sheet and label names.
-- `Secrets.js`: (Ignored by Git) Contains sensitive configuration like `SECRET_KEY`.
-- `appsscript.json`: Manifest file for the Google Apps Script project.
-- `.clasp.json.template`: A template for the `clasp` configuration file. Copy this to `.clasp.json` and insert your `scriptId`.
-- `Secrets.js.template`: A template for the secrets file. Copy this to `Secrets.js` and insert your `SECRET_KEY`.
+- `appscript/`: Subdirectory containing the Google Apps Script code.
+  - `Code.js`: Contains the webhook receiver and menu creation logic.
+  - `ZoomMeetingSummarizer.js`: Contains the `ZoomMeetingSummarizer` class.
+  - `Constants.js`: Contains configuration constants like sheet and label names.
+  - `Secrets.js`: (Ignored by Git) Contains sensitive configuration like `SECRET_KEY`.
+  - `appsscript.json`: Manifest file for the Google Apps Script project.
+  - `.clasp.json.template`: A template for the `clasp` configuration file.
+  - `Secrets.js.template`: A template for the secrets file.
+- `tampermonkey/`: Subdirectory for the Tampermonkey script to be used in Gemini.
+  - `gemini-to-sheet.user.js`: UserScript to automate Gemini and send data to Sheets.
+- `.gitignore`: Files to be ignored by Git.
+- `README.md`: This documentation file.
+- `LICENSE`: Project license.
 
 ## Configuration
 
-The following constants can be configured:
+The following constants can be configured in `appscript/Constants.js`:
 
 - `SECRET_KEY`: Security key for the webhook (stored in `Secrets.js`).
 - `RAW_SHEET`: Name of the sheet for raw data (stored in `Constants.js`).
@@ -46,6 +52,7 @@ This project uses [clasp](https://github.com/google/clasp) for local development
    clasp login
    ```
 4. **Initialize Configuration**:
+   - Enter the `appscript/` directory: `cd appscript`
    - Copy `.clasp.json.template` to `.clasp.json`.
    - Update the `scriptId` in `.clasp.json` with the ID of your Apps Script project (found in Project Settings).
 
@@ -58,7 +65,7 @@ This project uses [clasp](https://github.com/google/clasp) for local development
    - Create labels `zoom notes` and `zoom notes processed` in your Gmail account.
 
 ### 4. Project Configuration & Deployment
-   - Copy `Secrets.js.template` to `Secrets.js` and update `SECRET_KEY` with your desired value.
+   - In the `appscript/` directory, copy `Secrets.js.template` to `Secrets.js` and update `SECRET_KEY` with your desired value.
    - Push the code to Google:
      ```bash
      clasp push
@@ -78,3 +85,8 @@ This project uses [clasp](https://github.com/google/clasp) for local development
    - Update the `Raw` sheet.
    - Open a new tab with Gemini and the prompt ready.
    - Once Gemini generates the table, your external tool (Tampermonkey) should send the data back to the script's Web App URL.
+
+### Troubleshooting
+- **No data sent**: Ensure you have updated `WEBAPP_URL` in `tampermonkey/gemini-to-sheet.user.js` with your deployed Apps Script URL.
+- **Unauthorized**: Ensure `SECRET_KEY` in `tampermonkey/gemini-to-sheet.user.js` matches `SECRET_KEY` in `appscript/Secrets.js`.
+- **Pop-ups blocked**: Allow pop-ups for your Google Sheet to let it open Gemini.

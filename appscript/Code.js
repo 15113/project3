@@ -18,7 +18,19 @@ function doPost(e) {
   const parsedSheet = ss.getSheetByName(PROCESSED_SHEET);
 
   contents.tableData.forEach(row => {
-    parsedSheet.appendRow([row[0], row[1], row[2], row[3], row[4], row[5], "New"]);
+    // Ensure we have at least 6 columns, pad with empty strings if needed
+    const rowData = [...row];
+    while (rowData.length < 6) rowData.push("");
+    
+    parsedSheet.appendRow([
+      rowData[0], // Date
+      rowData[1], // Meeting Name
+      rowData[2], // Accomplishments
+      rowData[3], // Upcoming
+      rowData[4], // Risks
+      rowData[5], // Decisions
+      "New"       // Status
+    ]);
   });
 
   return ContentService.createTextOutput("Success");

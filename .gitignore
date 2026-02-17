@@ -1,6 +1,6 @@
 # Apps Script / clasp
-.clasp.json
-clasp-auth.json
+appscript/.clasp.json
+appscript/clasp-auth.json
 
 # IDEs
 .idea/
@@ -23,4 +23,4 @@ Thumbs.db
 .antigravity
 
 # Secrets
-Secrets.js
+appscript/Secrets.js
