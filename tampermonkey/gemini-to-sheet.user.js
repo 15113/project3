@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gemini-to-Sheet Bridge (Safari Optimized)
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  Automates Gemini prompt injection and sends results back to Google Sheets
 // @author       You
 // @match        https://gemini.google.com/app*
@@ -90,14 +90,15 @@
     }
 
     function watchForResponse() {
-        // Wait for Gemini to stop "typing" and for a table to appear
+        // Wait for Gemini to stop "typing" and for a table to appear with the export icon
         const checkFinish = setInterval(() => {
             const isGenerating = document.querySelector('button[aria-label="Stop generating"]');
             const table = document.querySelector('table');
+            const exportIcon = document.querySelector('span.export-sheets-icon');
 
-            if (!isGenerating && table) {
+            if (!isGenerating && table && exportIcon) {
                 clearInterval(checkFinish);
-                console.log("Table found. Scraping data...");
+                console.log("Table and export icon found. Scraping data...");
                 // Add a small delay to ensure table rendering is complete
                 setTimeout(() => scrapeAndSend(table), 1000);
             }
