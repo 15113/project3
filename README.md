@@ -12,8 +12,9 @@ This Google Apps Script project automates the process of collecting Zoom meeting
 ## Project Structure
 
 - `appscript/`: Subdirectory containing the Google Apps Script code.
-  - `Code.js`: Contains the webhook receiver and menu creation logic.
-  - `ZoomMeetingSummarizer.js`: Contains the `ZoomMeetingSummarizer` class.
+  - `Code.js`: Contains the webhook receiver, menu creation logic, and utility functions.
+  - `ZoomMeetingSummarizer.js`: Contains the `ZoomMeetingSummarizer` class for data processing.
+  - `GoogleSheetsManager.js`: Contains the `GoogleSheetsManager` class for sheet maintenance.
   - `Constants.js`: Contains configuration constants like sheet and label names.
   - `Secrets.js`: (Ignored by Git) Contains sensitive configuration like `SECRET_KEY`.
   - `appsscript.json`: Manifest file for the Google Apps Script project.
@@ -88,8 +89,9 @@ This project uses [clasp](https://github.com/google/clasp) for local development
 
 1. Open the Google Sheet.
 2. Click on the `🚀 AI Automation` menu.
-3. Select `Generate Weekly Report`.
-4. The script will:
+3. Select `Generate Weekly Report` to process new notes.
+4. Select `Clear Spreadsheet` to truncate the Raw and Processed sheets (keeping headers).
+5. The automation flow for `Generate Weekly Report`:
    - Collect emails from Gmail.
    - Update the `Raw` sheet.
    - Open a new tab with Gemini and the prompt ready.

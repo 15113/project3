@@ -8,6 +8,15 @@ function createMeetingSummaryTable() {
 }
 
 /**
+ * UTILITY: Truncate Raw and Processed sheets
+ */
+function truncateSheets() {
+  const manager = new GoogleSheetsManager();
+  manager.truncateRawSheet();
+  manager.truncateProcessedSheet();
+}
+
+/**
  * RECEIVER (Webhook): Catch data sent back from Tampermonkey
  */
 function doPost(e) {
@@ -43,5 +52,7 @@ function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('🚀 AI Automation')
       .addItem('Generate Weekly Report', 'createMeetingSummaryTable')
+      .addSeparator()
+      .addItem('Clear Spreadsheet', 'truncateSheets')
       .addToUi();
 }
