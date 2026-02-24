@@ -27,7 +27,7 @@ class ZoomMeetingSummarizer {
   }
 
   /**
-   * 2. AI LAUNCHER: Bundles ONLY "New" rows and launches the Gemini Bridge
+   * 2. AI LAUNCHER: Processes "New" rows one by one and launches the Gemini Bridge
    */
   launchGeminiAutomation() {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -38,8 +38,7 @@ class ZoomMeetingSummarizer {
     if (fullRange.getNumRows() < 2) return SpreadsheetApp.getUi().alert("Raw sheet is empty!");
     
     const data = fullRange.getValues();
-    let masterPrompt = "";
-    let rowsToMark = [];
+    let prompts = [];
 
     // Loop through rows (starting at index 1 to skip header)
     for (let i = 1; i < data.length; i++) {
@@ -49,39 +48,57 @@ class ZoomMeetingSummarizer {
         const meetingSubject = data[i][1];
         const meetingBody = data[i][2];
         
-        masterPrompt += `MEETING: ${meetingSubject}\nCONTENT: ${meetingBody}\n\n`;
-        rowsToMark.push(i + 1); // Store row number for status update
+        const prompt = `MEETING: ${meetingSubject}\nCONTENT: ${meetingBody}`;
+        const instructions = "Create a table with columns: Date, Meeting Name, Accomplishments, Upcoming, Risks, Decisions. Use bullets for text within cells. Data source:\n\n" + prompt;
+        
+        prompts.push(instructions);
+        
+        // Update status in Sheet immediately
+        rawSheet.getRange(i + 1, 4).setValue("Processed");
       }
     }
 
     // If no rows were "New", exit gracefully
-    if (!masterPrompt) {
+    if (prompts.length === 0) {
       SpreadsheetApp.getUi().alert("No new meetings found with status 'New'.");
       return;
     }
 
-    // Define the instructions that match your Tampermonkey safety gate
-    const instructions = "Create a table with columns: Date, Meeting Name, Accomplishments, Upcoming, Risks, Decisions. Use bullets for text within cells. Data source:\n\n" + masterPrompt;
-    
-    // Update status in Sheet before opening Gemini
-    rowsToMark.forEach(rowNumber => {
-      rawSheet.getRange(rowNumber, 4).setValue("Processed");
-    });
-
-    // Open the Gemini Bridge in a new tab
-    const html = `<script>
-      const win = window.open("https://gemini.google.com/app#${encodeURIComponent(instructions)}", "_blank");
-      if (win) {
-        setTimeout(() => { google.script.host.close(); }, 500);
-      } else {
-        alert("Please allow popups for this sheet!");
+    // Open the Gemini Bridge for each prompt
+    const html = `
+    <script>
+      const prompts = ${JSON.stringify(prompts)};
+      
+      function openPrompts() {
+        prompts.forEach((instructions, index) => {
+          // Add a small delay between opening tabs to avoid browser blocking
+          setTimeout(() => {
+            const url = "https://gemini.google.com/app#" + encodeURIComponent(instructions);
+            const win = window.open(url, "_blank");
+            if (!win) {
+              alert("Please allow popups for this sheet! Stopped at meeting " + (index + 1));
+            }
+            
+            // Close the dialog after the last one is opened
+            if (index === prompts.length - 1) {
+              setTimeout(() => { google.script.host.close(); }, 1000);
+            }
+          }, index * 1000); 
+        });
       }
-    </script>`;
+      
+      openPrompts();
+    </script>
+    <div style="font-family: sans-serif; text-align: center; padding: 20px;">
+      <p>Opening ${prompts.length} meetings in Gemini...</p>
+      <p>Please make sure popups are enabled.</p>
+    </div>
+    `;
     
     const gemini = HtmlService.createHtmlOutput(html)
-      .setHeight(256)
-      .setWidth(256);
+      .setHeight(150)
+      .setWidth(300);
       
-    SpreadsheetApp.getUi().showModalDialog(gemini, "Opening Gemini...");
+    SpreadsheetApp.getUi().showModalDialog(gemini, "Processing AI Automation...");
   }
 }
