@@ -45,11 +45,12 @@ class ZoomMeetingSummarizer {
       const rowStatus = data[i][3]; // Column D
       
       if (rowStatus === "New") {
+        const meetingDate = data[i][0];
         const meetingSubject = data[i][1];
         const meetingBody = data[i][2];
         
-        const prompt = `MEETING: ${meetingSubject}\nCONTENT: ${meetingBody}`;
-        const instructions = "Create a table with columns: Date, Meeting Name, Accomplishments, Upcoming, Risks, Decisions. Use bullets for text within cells. Data source:\n\n" + prompt;
+        const prompt = `DATE: ${meetingDate}\nMEETING: ${meetingSubject}\nCONTENT: ${meetingBody}`;
+        const instructions = "Create a table with columns: Date, Meeting Name, Accomplishments, Upcoming, Risks, Decisions. Use the provided DATE for the Date column. Use bullets for text within cells. Data source:\n\n" + prompt;
         
         prompts.push(instructions);
         
