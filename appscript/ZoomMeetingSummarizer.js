@@ -71,7 +71,7 @@ class ZoomMeetingSummarizer {
       
       function openPrompts() {
         prompts.forEach((instructions, index) => {
-          // Add a small delay between opening tabs to avoid browser blocking
+          // Add a larger delay between opening tabs to avoid "Verify you are not a robot" checks
           setTimeout(() => {
             const url = "https://gemini.google.com/app#" + encodeURIComponent(instructions);
             const win = window.open(url, "_blank");
@@ -83,7 +83,7 @@ class ZoomMeetingSummarizer {
             if (index === prompts.length - 1) {
               setTimeout(() => { google.script.host.close(); }, 1000);
             }
-          }, index * 1000); 
+          }, index * 5000); // 5-second delay between tabs
         });
       }
       
