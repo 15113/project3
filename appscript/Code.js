@@ -2,19 +2,17 @@
  * Summarize weekly meeting notes and send to Gemini for AI processing
  */
 function createMeetingSummaryTable() {
-  const summarizer = new ZoomMeetingSummarizer();
-  summarizer.collectZoomSummaries();
-  summarizer.launchGeminiAutomation();
+  ZoomMeetingSummarizer.collectZoomSummaries();
+  ZoomMeetingSummarizer.launchGeminiAutomation();
 }
 
 /**
  * UTILITY: Reset sheets and Gmail labels
  */
 function reset() {
-  const manager = new GoogleAppsManager();
-  manager.truncateRawSheet();
-  manager.truncateProcessedSheet();
-  manager.resetZoomEmails();
+  GoogleAppsManager.truncateRawSheet();
+  GoogleAppsManager.truncateProcessedSheet();
+  GoogleAppsManager.resetZoomEmails();
 }
 
 /**
@@ -22,28 +20,8 @@ function reset() {
  */
 function doPost(e) {
   const contents = JSON.parse(e.postData.contents);
-  if (contents.key !== SECRET_KEY) return ContentService.createTextOutput("Unauthorized");
-
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const parsedSheet = ss.getSheetByName(PROCESSED_SHEET);
-
-  contents.tableData.forEach(row => {
-    // Ensure we have at least 6 columns, pad with empty strings if needed
-    const rowData = [...row];
-    while (rowData.length < 6) rowData.push("");
-    
-    parsedSheet.appendRow([
-      rowData[0], // Date
-      rowData[1], // Meeting Name
-      rowData[2], // Accomplishments
-      rowData[3], // Upcoming
-      rowData[4], // Risks
-      rowData[5], // Decisions
-      "New"       // Status
-    ]);
-  });
-
-  return ContentService.createTextOutput("Success");
+  const result = ZoomMeetingSummarizer.processGeminiSummary(contents);
+  return ContentService.createTextOutput(result);
 }
 
 /**

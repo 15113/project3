@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gemini-to-Sheet Bridge (Safari Optimized)
 // @namespace    http://tampermonkey.net/
-// @version      1.6
+// @version      1.8
 // @description  Automates Gemini prompt injection and sends results back to Google Sheets
 // @author       You
 // @match        https://gemini.google.com/app*
@@ -127,7 +127,11 @@
             },
             onload: function(response) {
                 if (response.responseText.includes("Success")) {
-                    alert("✅ Data successfully sent to your Processed Sheet!");
+                    console.log("Data successfully sent! Closing tab in 2 seconds...");
+                    // Give the user a moment to see the success message in console
+                    setTimeout(() => {
+                        window.close();
+                    }, 2000);
                 } else {
                     alert("❌ Error: " + response.responseText);
                 }

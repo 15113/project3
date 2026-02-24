@@ -2,7 +2,7 @@ class ZoomMeetingSummarizer {
   /**
    * 1. COLLECTOR: Pulls "zoom notes" from Gmail into the "Raw" sheet
    */
-  collectZoomSummaries() {
+  static collectZoomSummaries() {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const rawSheet = ss.getSheetByName(RAW_SHEET);
 
@@ -29,7 +29,7 @@ class ZoomMeetingSummarizer {
   /**
    * 2. AI LAUNCHER: Processes "New" rows one by one and launches the Gemini Bridge
    */
-  launchGeminiAutomation() {
+  static launchGeminiAutomation() {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const rawSheet = ss.getSheetByName(RAW_SHEET);
     
@@ -50,7 +50,7 @@ class ZoomMeetingSummarizer {
         const meetingBody = data[i][2];
         
         const prompt = `DATE: ${meetingDate}\nMEETING: ${meetingSubject}\nCONTENT: ${meetingBody}`;
-        const instructions = "Create a table with columns: Date, Meeting Name, Accomplishments, Upcoming, Risks, Decisions. Use the provided DATE for the Date column. Use bullets for text within cells. Data source:\n\n" + prompt;
+        const instructions = "Create a table with columns: Date, Meeting Name, Accomplishments, Upcoming, Risks, Decisions. Use the provided DATE for the Date column in YYYY-MM-DD format. Use bullets for text within cells. Data source:\n\n" + prompt;
         
         prompts.push(instructions);
         
@@ -101,5 +101,34 @@ class ZoomMeetingSummarizer {
       .setWidth(300);
       
     SpreadsheetApp.getUi().showModalDialog(gemini, "Processing AI Automation...");
+  }
+
+  /**
+   * 3. RECEIVER (Webhook): Process data sent back from Tampermonkey
+   * @param {Object} contents The parsed JSON body from the POST request
+   */
+  static processGeminiSummary(contents) {
+    if (contents.key !== SECRET_KEY) return "Unauthorized";
+
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const parsedSheet = ss.getSheetByName(PROCESSED_SHEET);
+
+    contents.tableData.forEach(row => {
+      // Ensure we have at least 6 columns, pad with empty strings if needed
+      const rowData = [...row];
+      while (rowData.length < 6) rowData.push("");
+      
+      parsedSheet.appendRow([
+        rowData[0], // Date
+        rowData[1], // Meeting Name
+        rowData[2], // Accomplishments
+        rowData[3], // Upcoming
+        rowData[4], // Risks
+        rowData[5], // Decisions
+        "New"       // Status
+      ]);
+    });
+
+    return "Success";
   }
 }

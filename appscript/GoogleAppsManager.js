@@ -5,21 +5,21 @@ class GoogleAppsManager {
   /**
    * Clears all rows from the RAW sheet except the title row (row 1)
    */
-  truncateRawSheet() {
-    this._truncateSheet(RAW_SHEET);
+  static truncateRawSheet() {
+    GoogleAppsManager._truncateSheet(RAW_SHEET);
   }
 
   /**
    * Clears all rows from the PROCESSED sheet except the title row (row 1)
    */
-  truncateProcessedSheet() {
-    this._truncateSheet(PROCESSED_SHEET);
+  static truncateProcessedSheet() {
+    GoogleAppsManager._truncateSheet(PROCESSED_SHEET);
   }
 
   /**
    * Resets the labels of emails from "zoom notes processed" back to "zoom notes"
    */
-  resetZoomEmails() {
+  static resetZoomEmails() {
     const processedLabel = GmailApp.getUserLabelByName(PROCESSED_LABEL);
     const sourceLabel = GmailApp.getUserLabelByName(RAW_LABEL);
     
@@ -37,7 +37,7 @@ class GoogleAppsManager {
    * @param {string} sheetName 
    * @private
    */
-  _truncateSheet(sheetName) {
+  static _truncateSheet(sheetName) {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName(sheetName);
     if (!sheet) return;
