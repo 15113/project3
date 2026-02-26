@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Gemini-to-Sheet Bridge (Safari Optimized)
 // @namespace    http://tampermonkey.net/
-// @version      1.8
+// @version      2.0
 // @description  Automates Gemini prompt injection and sends results back to Google Sheets
 // @author       You
 // @match        https://gemini.google.com/app*
@@ -99,8 +99,8 @@
             if (!isGenerating && table && exportIcon) {
                 clearInterval(checkFinish);
                 console.log("Table and export icon found. Scraping data...");
-                // Add a small delay to ensure table rendering is complete
-                setTimeout(() => scrapeAndSend(table), 1000);
+                // Add a larger delay to ensure table rendering is complete
+                setTimeout(() => scrapeAndSend(table), 5000);
             }
         }, 2000);
     }
@@ -137,7 +137,7 @@
                 }
             },
             onerror: function(err) {
-                alert("❌ Connection failed. Check your Web App URL and Safari permissions.");
+                alert("❌ Connection failed. Check your Web App URL and Safari permissions.\n\nDetails: " + (err.error || err.statusText || "Unknown error"));
             }
         });
     }
